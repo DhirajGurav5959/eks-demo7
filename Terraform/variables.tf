@@ -19,7 +19,7 @@ variable "cluster_name" {
 variable "instance_types" {
   description = "EC2 instances used for K8s nodes"
   type        = list
-  default     = ["t2.small"]
+  default     = ["t3.small"]
 }
 
 variable "vpc_cidr" {
