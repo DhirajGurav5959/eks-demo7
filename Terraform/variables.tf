@@ -45,3 +45,13 @@ variable "cluster_desired_size" {
   type        = number
   default     = 2
 }
+
+variable "vpc_id" {
+  description = "VPC ID to launch the EKS cluster in"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs where EKS worker nodes will run"
+  type        = list(string)
+}
