@@ -42,7 +42,7 @@ jobs:
         working-directory: Terraform
 
       - name: Terraform Apply
-        run: terraform apply -var "cluster_name=${{ github.event.inputs.cluster_name }}" -var "region=${{ github.event.inputs.region }}" -auto-approve
+        run: terraform apply  -auto-approve
         working-directory: Terraform
 
   destroy_cluster:
@@ -73,5 +73,5 @@ jobs:
         working-directory: Terraform
 
       - name: Terraform Destroy
-        run: terraform destroy -var "cluster_name=${{ github.event.inputs.cluster_name }}" -var "region=${{ github.event.inputs.region }}" -auto-approve
+        run: terraform destroy  -auto-approve
         working-directory: Terraform
