@@ -1,30 +1,26 @@
-terraform {
-  backend "s3" {
-    bucket = "shiviiii"
-    key    = "eks-demo/terraform.tfstate"
-    region = "us-west-2"
-    encrypt = true
-  }
+module "vpc" {
+  source     = "./modules/vpc"
+  vpc_name   = var.vpc_name
+  vpc_cidr   = var.vpc_cidr
+  region     = var.region
 }
 
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "19.17.0"
+  source          = "./modules/eks"
+  cluster_name    = var.cluster_name
+  vpc_id          = module.vpc.vpc_id
+  private_subnets = module.vpc.private_subnets
+  public_subnets  = module.vpc.public_subnets
+  eks_version     = var.eks_version
+}
 
-  cluster_name    = var.cluster_name     # ✅ match declared name
-  cluster_version = var.cluster_version
-
-  vpc_id     = var.vpc_id                # ✅ must declare below
-  subnet_ids = var.subnet_ids            # ✅ must declare below
-
-  cluster_endpoint_public_access = true
-
-  eks_managed_node_groups = {
-    default = {
-      instance_types = var.instance_types
-      min_size       = var.cluster_min_size
-      max_size       = var.cluster_max_size
-      desired_size   = var.cluster_desired_size
-    }
-  }
+module "node_group" {
+  source              = "./modules/node-group"
+  cluster_name        = module.eks.cluster_name
+  node_group_name     = "${var.cluster_name}-node-group"
+  subnet_ids          = module.vpc.public_subnets
+  instance_types      = [var.node_instance_type]
+  desired_size        = var.desired_size
+  max_size            = var.max_size
+  min_size            = var.min_size
 }
